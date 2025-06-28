@@ -1,46 +1,64 @@
-// types/index.ts
-// export interface User {
-//   id: string;
-//   name: string;
-//   email: string;
-//   category: 'client' | 'tattoo' | 'photo';
-// }
 export interface User {
-  id: string;
+  _id?: string;
   name: string;
   email: string;
-  category: 'client' | 'tattoo' | 'photo';
+  category: "client" | "tattoo" | "photo";
 }
 
 export interface Tattoo {
-  id: string;
+  _id?: string;
   title: string;
   description: string;
+  artist: string;
+  style: string;
+  category: string;
+  date: string;         // ISO string is fine
   price: number;
-  createdBy: string;
+  uniqueCode: string;
+  image: string | File;
+}
+
+export interface Photo {
+  _id: "",
+  title: string;
+  photographer: string;
+  category:
+    | "Portrait"
+    | "Wedding"
+    | "Fashion"
+    | "Nature"
+    | "Event"
+    | "Street"
+    | "Studio"
+    | "Product"
+    | "Documentary"; // from select dropdown
+  size: string; // e.g., 4x6 or 1920x1080
+  date: string; // ISO format (from input[type="date"])
+  price: number;
+  uniqueCode: string;
+  image: string | File;
+  description?: string; // if you plan to add description later
+  createdBy: string; // currentUser.id
   deleted?: boolean;
 }
 
-export interface PhotoShoot {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  type: string; // birthday, baby shower etc.
-  createdBy: string;
-  deleted?: boolean;
-}
 
 export interface Appointment {
-  id: string;
-  userId: string;
-  serviceId: string;
-  serviceType: 'tattoo' | 'photo';
-  status: 'pending' | 'confirmed';
+  _id?: string;
+  createdAt: string;
+  userId: {
+    name: string;
+  };
+  serviceType: "tattoo" | "photo";
+  serviceId: {
+    title: string;
+    category: string;
+  };
+  status: "pending" | "confirmed" | "cancelled" | "accepted";
 }
 
 export type Service = {
-  id: number;
+  // id: number;
   title: string;
   description: string;
   imageUrl?: string;

@@ -1,11 +1,22 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import type { ReactNode } from 'react';
-import { useAuth } from './context/AuthContext';
-import { Login } from './pages/Login'
-import { Register } from './pages/Register';
-import TattooDashboard from './pages/dashboards/TattooDashboard';
-import PhotoDashboard from './pages/dashboards/PhotoDashboard';
-import ClientDashboard from './pages/dashboards/ClientDashboard';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import type { ReactNode } from "react";
+import { useAuth } from "./context/AuthContext";
+import { Login } from "./pages/LoginPage";
+import { Register } from "./pages/RegisterPage";
+import TattooDashboard from "./pages/dashboards/TattooDashboard";
+import PhotoDashboard from "./pages/dashboards/PhotoDashboard";
+import ClientDashboard from "./pages/dashboards/ClientDashboard";
+import Tattoos from "./pages/TattoosPage";
+import Photos from "./pages/PhotosPage";
+import Services from "./pages/ServicesPage";
+import TattoosDetails from "./pages/TattooDetails";
+import PhotosDetails from "./pages/PhotosDetails";
+
 
 const PrivateRoute = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
@@ -16,13 +27,38 @@ export default function AppRoutes() {
   return (
     <Router>
       <Routes>
-         {/* <Route path="/register" element={<Navigate to="/register" replace />} /> */}
         <Route path="/" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard/tattoo" element={<PrivateRoute><TattooDashboard /></PrivateRoute>} />
-        <Route path="/dashboard/photo" element={<PrivateRoute><PhotoDashboard /></PrivateRoute>} />
-        <Route path="/dashboard/client" element={<PrivateRoute><ClientDashboard /></PrivateRoute>} />
-         <Route path="*" element={<h1>404 - Page Not Found</h1>} />
+        <Route
+          path="/dashboard/tattoo"
+          element={
+            <PrivateRoute>
+              <TattooDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/photo"
+          element={
+            <PrivateRoute>
+              <PhotoDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/client"
+          element={
+            <PrivateRoute>
+              <ClientDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/tattoos" element={<Tattoos />} />
+        <Route path="/photos" element={<Photos />} />
+        <Route path="/service" element={<Services />} />
+        <Route path="/tattoos/:id" element={<TattoosDetails />} />
+        <Route path="/photos/:id" element={<PhotosDetails />} />
+        <Route path="*" element={<h1>404 - Page Not Found</h1>} />
       </Routes>
     </Router>
   );

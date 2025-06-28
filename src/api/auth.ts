@@ -16,5 +16,10 @@ export const registerUser = async (data: RegisterPayload) => {
 }
 
 export const loginUser = (data: LoginPayload) => {
-  return axiosInstance.post('/auth/login', data);
+    const token = sessionStorage.getItem("authToken");
+  return axiosInstance.post("/auth/login", data, {
+    headers: {
+      Authorization: `Bearer ${token}`, // ✅ send token to backend
+    },
+  });
 };
