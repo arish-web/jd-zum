@@ -19,21 +19,6 @@ import type { Appointment } from "../../types";
 import { getAppointmentsForServiceOwner } from "../../api/appointment";
 import { useState, useEffect } from "react";
 
-// const monthlyData = [
-//   { month: "Jan", bookings: 5 },
-//   { month: "Feb", bookings: 9 },
-//   { month: "Mar", bookings: 6 },
-//   { month: "Apr", bookings: 12 },
-//   { month: "May", bookings: 10 },
-//   { month: "Jun", bookings: 15 },
-// ];
-
-const categoryData = [
-  { name: "Wedding", value: 300 },
-  { name: "Portrait", value: 250 },
-  { name: "Event", value: 200 },
-  { name: "Product", value: 150 },
-];
 
 const COLORS = ["#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 

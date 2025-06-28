@@ -52,7 +52,7 @@ export interface Appointment {
   serviceType: "tattoo" | "photo";
   serviceId: {
     title: string;
-    category: string;
+    category?: string
   };
   status: "pending" | "confirmed" | "cancelled" | "accepted";
 }
