@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
-// import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import { Sun, Moon, Menu } from "lucide-react";
 import { useStore } from "../../store/index";
 import { useState } from "react";
 
-const linkClass = "block px-4 py-2 text-gray-800 dark:text-white hover:underline";
+const linkClass = "text-md font-medium hover:text-blue-600 dark:text-white";
 
 export default function Navbar() {
-  const { currentUser, isDarkMode, toggleDarkMode } = useStore();
-  // const { isDarkMode, toggleDarkMode } = useTheme();
+  const { currentUser } = useStore();
+  const { isDarkMode, toggleDarkMode } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const renderLinks = () => {
