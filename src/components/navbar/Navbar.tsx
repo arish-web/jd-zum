@@ -7,8 +7,6 @@ export default function Navbar() {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const currentUser = useStore((state) => state.currentUser);
 
-  console.log("Navbar currentUser:", currentUser); // ✅ check this output in devtools
-
   const linkClass = `text-md font-medium hover:text-blue-600 ${
     isDarkMode ? "text-gray-300" : "text-gray-700"
   }`;
