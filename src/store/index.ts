@@ -21,11 +21,9 @@ export const useStore = create<AppState>((set) => {
   const storedUser = sessionStorage.getItem("user");
   const storedToken = sessionStorage.getItem("token");
 
-
   return {
     isDarkMode: false,
-    toggleDarkMode: () =>
-      set((state) => ({ isDarkMode: !state.isDarkMode })),
+    toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
     currentUser: storedUser ? JSON.parse(storedUser) : null,
     setCurrentUser: (user) => {
       if (user) {

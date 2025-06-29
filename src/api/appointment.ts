@@ -1,13 +1,27 @@
-import axios from './axiosInstance';
+import axios from "./axiosInstance";
 
 // Create Appointment (with token from sessionStorage)
 export const createAppointment = (data: any) => {
   const token = sessionStorage.getItem("authToken");
-  return axios.post('/appointments', data, {
+  return axios.post("/appointments", data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+// update the appoinment status
+export const updateAppointmentStatus = (id: string, status: string) => {
+  const token = sessionStorage.getItem("authToken");
+  return axios.put(
+    `/appointments/${id}/status`,
+    { status },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 // Get appointments for a specific user
@@ -19,14 +33,13 @@ export const getAppointmentsForUser = (userId: string) => {
     },
   });
 };
-  
 
 // Get appointments for a service owner (e.g., tattoo artist or photographer)
 export const getAppointmentsForServiceOwner = (ownerId: string) => {
-    const token = sessionStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return axios.get(`/appointmentservice?serviceOwnerId=${ownerId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-}
+};

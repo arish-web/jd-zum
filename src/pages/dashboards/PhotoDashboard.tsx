@@ -15,17 +15,45 @@ import Navbar from "../../components/navbar/Navbar";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
 import { useMemo } from "react";
+import Notiflix from "notiflix";
+import StatusModal from "../../components/StatusModal";
 import type { Appointment } from "../../types";
 import { getAppointmentsForServiceOwner } from "../../api/appointment";
 import { useState, useEffect } from "react";
+import { updateAppointmentStatus } from "../../api/appointment";
 
-
-const COLORS = ["#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
+const COLORS = [
+  "#FF6B6B", // Red-ish
+  "#4ECDC4", // Turquoise
+  "#FFD93D", // Yellow
+  "#6A4C93", // Purple
+  "#FF9F1C", // Orange
+  "#1A535C", // Teal
+  "#2EC4B6", // Aqua
+  "#B5838D", // Mauve
+  "#3D348B", // Indigo
+];
 
 const PhotoDashboard: React.FC = () => {
   const { isDarkMode } = useTheme();
   const { user } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [selected, setSelected] = useState<Appointment | null>(null);
+
+  const handleOpenStatusModal = (appointment: Appointment) => {
+    setSelected(appointment);
+  };
+
+  const handleStatusUpdate = async (newStatus: Appointment["status"]) => {
+    if (!selected) return;
+    try {
+      await updateAppointmentStatus(selected._id!, newStatus);
+      Notiflix.Notify.success(`Status updated to ${newStatus}`);
+      setSelected(null);
+    } catch (err) {
+      Notiflix.Notify.failure("Failed to update status");
+    }
+  };
 
   const chartData = useMemo(() => {
     const counts: { [key: string]: number } = {};
@@ -55,13 +83,12 @@ const PhotoDashboard: React.FC = () => {
     value,
   }));
 
-
   useEffect(() => {
     const fetchAppointments = async () => {
       if (!user?._id) return;
       try {
         const res = await getAppointmentsForServiceOwner(user._id);
-        setAppointments(res.data); // assuming the array is in res.data
+        setAppointments(res.data);
       } catch (err) {
         console.error("Failed to fetch appointments:", err);
       }
@@ -69,6 +96,8 @@ const PhotoDashboard: React.FC = () => {
 
     fetchAppointments();
   }, [user]);
+
+  console.log("app.status", appointments[5]?.status);
 
   return (
     <div
@@ -173,21 +202,44 @@ const PhotoDashboard: React.FC = () => {
                   <td className="px-6 py-4">
                     {new Date(app.createdAt).toLocaleDateString("en-GB")}
                   </td>
-                  <td className="px-6 py-4">
+                  <td>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        app.status === "pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : app.status === "accepted"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer
+                                  ${
+                                    app.status === "pending"
+                                      ? "bg-red-100 text-red-700"
+                                      : ""
+                                  }
+                                  ${
+                                    app.status === "accepted"
+                                      ? "bg-green-100 text-green-700"
+                                      : ""
+                                  }
+                                  ${
+                                    app.status === "confirmed"
+                                      ? "bg-blue-100 text-blue-700"
+                                      : ""
+                                  }
+                                  ${
+                                    app.status === "cancelled"
+                                      ? "bg-gray-200 text-gray-600"
+                                      : ""
+                                  }
+                                `}
+                      onClick={() => handleOpenStatusModal(app)}
                     >
+                      {/* {app.status} */}
                       {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                     </span>
                   </td>
                 </tr>
               ))}
+              <StatusModal
+                isOpen={!!selected}
+                onClose={() => setSelected(null)}
+                onSelect={handleStatusUpdate}
+                clientName={selected?.userId.name || ""}
+              />
             </tbody>
           </table>
         </div>

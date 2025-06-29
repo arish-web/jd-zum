@@ -67,7 +67,6 @@ const ClientDashboard: React.FC = () => {
     fetchAppointments();
   }, [user]);
 
-
   return (
     <div
       className={`min-h-screen p-4 ${
@@ -159,39 +158,47 @@ const ClientDashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {appointments.map((appointment) => (
+              {appointments.map((app) => (
                 <tr
-                  key={appointment._id}
+                  key={app._id}
                   className={
                     isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"
                   }
                 >
+                  <td className="px-6 py-4">{app.userId?.name || "Unknown"}</td>
+                  <td className="px-6 py-4 capitalize">{app.serviceType}</td>
                   <td className="px-6 py-4">
-                    {appointment.userId?.name || "Unknown"}
-                  </td>
-                  <td className="px-6 py-4 capitalize">
-                    {appointment.serviceType}
-                  </td>
-                  <td className="px-6 py-4">
-                    {appointment.serviceId?.title || "Untitled"}
+                    {app.serviceId?.title || "Untitled"}
                   </td>
                   <td className="px-6 py-4">
-                    {new Date(appointment.createdAt).toLocaleDateString(
-                      "en-GB"
-                    )}
+                    {new Date(app.createdAt).toLocaleDateString("en-GB")}
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        appointment.status === "pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : appointment.status === "confirmed"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer
+                                  ${
+                                    app.status === "pending"
+                                      ? "bg-red-100 text-red-700"
+                                      : ""
+                                  }
+                                  ${
+                                    app.status === "accepted"
+                                      ? "bg-green-100 text-green-700"
+                                      : ""
+                                  }
+                                  ${
+                                    app.status === "confirmed"
+                                      ? "bg-blue-100 text-blue-700"
+                                      : ""
+                                  }
+                                  ${
+                                    app.status === "cancelled"
+                                      ? "bg-gray-200 text-gray-600"
+                                      : ""
+                                  }
+                                `}
                     >
-                      {appointment.status.charAt(0).toUpperCase() +
-                        appointment.status.slice(1)}
+                      {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                     </span>
                   </td>
                 </tr>

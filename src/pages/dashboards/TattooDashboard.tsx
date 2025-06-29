@@ -18,7 +18,9 @@ import { useAuth } from "../../context/AuthContext";
 import { useMemo } from "react";
 import type { Appointment } from "../../types";
 import { getAppointmentsForServiceOwner } from "../../api/appointment";
-
+import { updateAppointmentStatus } from "../../api/appointment";
+import Notiflix from "notiflix";
+import StatusModal from "../../components/StatusModal";
 
 const COLORS = ["#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
@@ -26,31 +28,51 @@ const TattooDashboard: React.FC = () => {
   const { isDarkMode } = useTheme();
   const { user } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [selected, setSelected] = useState<Appointment | null>(null);
+
+  const handleOpenStatusModal = (appointment: Appointment) => {
+    setSelected(appointment);
+  };
+
+  const handleStatusUpdate = async (newStatus: Appointment["status"]) => {
+    if (!selected) return;
+    try {
+      await updateAppointmentStatus(selected._id!, newStatus);
+      Notiflix.Notify.success(`Status updated to ${newStatus}`);
+      setSelected(null);
+      // Optionally refresh appointments here
+    } catch (err) {
+      Notiflix.Notify.failure("Failed to update status");
+    }
+  };
 
   const chartData = useMemo(() => {
-  const counts: { [key: string]: number } = {};
+    const counts: { [key: string]: number } = {};
 
-  appointments.forEach((app) => {
-    const date = new Date(app.createdAt);
-    const month = date.toLocaleString("default", { month: "short" });
-    counts[month] = (counts[month] || 0) + 1;
-  });
+    appointments.forEach((app) => {
+      const date = new Date(app.createdAt);
+      const month = date.toLocaleString("default", { month: "short" });
+      counts[month] = (counts[month] || 0) + 1;
+    });
 
-  return Object.entries(counts).map(([month, bookings]) => ({ month, bookings }));
-}, [appointments]);
+    return Object.entries(counts).map(([month, bookings]) => ({
+      month,
+      bookings,
+    }));
+  }, [appointments]);
 
-const categoryCount = appointments.reduce((acc, app) => {
-  const category = app?.serviceId?.category;
-  if (category) {
-    acc[category] = (acc[category] || 0) + 1;
-  }
-  return acc;
-}, {} as Record<string, number>);
+  const categoryCount = appointments.reduce((acc, app) => {
+    const category = app?.serviceId?.category;
+    if (category) {
+      acc[category] = (acc[category] || 0) + 1;
+    }
+    return acc;
+  }, {} as Record<string, number>);
 
-const categoryData = Object.entries(categoryCount).map(([name, value]) => ({
-  name,
-  value,
-}));
+  const categoryData = Object.entries(categoryCount).map(([name, value]) => ({
+    name,
+    value,
+  }));
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -65,7 +87,6 @@ const categoryData = Object.entries(categoryCount).map(([name, value]) => ({
 
     fetchAppointments();
   }, [user]);
-
 
   return (
     <div
@@ -170,21 +191,44 @@ const categoryData = Object.entries(categoryCount).map(([name, value]) => ({
                   <td className="px-6 py-4">
                     {new Date(app.createdAt).toLocaleDateString("en-GB")}
                   </td>
-                  <td className="px-6 py-4">
+                  <td>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        app.status === "pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : app.status === "accepted"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer
+                                  ${
+                                    app.status === "pending"
+                                      ? "bg-red-100 text-red-700"
+                                      : ""
+                                  }
+                                  ${
+                                    app.status === "accepted"
+                                      ? "bg-green-100 text-green-700"
+                                      : ""
+                                  }
+                                  ${
+                                    app.status === "confirmed"
+                                      ? "bg-blue-100 text-blue-700"
+                                      : ""
+                                  }
+                                  ${
+                                    app.status === "cancelled"
+                                      ? "bg-gray-200 text-gray-600"
+                                      : ""
+                                  }
+                                `}
+                      onClick={() => handleOpenStatusModal(app)}
                     >
+                      {/* {app.status} */}
                       {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                     </span>
                   </td>
                 </tr>
               ))}
+              <StatusModal
+                isOpen={!!selected}
+                onClose={() => setSelected(null)}
+                onSelect={handleStatusUpdate}
+                clientName={selected?.userId.name || ""}
+              />
             </tbody>
           </table>
         </div>
