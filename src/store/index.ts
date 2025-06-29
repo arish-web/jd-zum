@@ -29,7 +29,7 @@ export const useStore = create<AppState>((set) => {
     currentUser: storedUser ? JSON.parse(storedUser) : null,
     setCurrentUser: (user) => {
       if (user) {
-        sessionStorage.setItem("currentUser", JSON.stringify(user));
+        sessionStorage.setItem("user", JSON.stringify(user));
       } else {
         sessionStorage.removeItem("currentUser");
       }

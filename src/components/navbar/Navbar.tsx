@@ -3,6 +3,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { Sun, Moon, Menu } from "lucide-react";
 import { useStore } from "../../store/index";
 import { useState } from "react";
+import { useEffect } from "react";
 
 const linkClass = "text-md font-medium hover:text-blue-600 dark:text-white";
 
@@ -14,7 +15,7 @@ export default function Navbar() {
   const renderLinks = () => {
     if (!currentUser) return null;
 
-    switch (currentUser.role) {
+    switch (currentUser?.role) {
       case "tattoo":
         return (
           <>
@@ -40,6 +41,13 @@ export default function Navbar() {
         return null;
     }
   };
+
+  useEffect(() => {
+  const storedUser = sessionStorage.getItem("user"); // ✅ Make sure your sessionStorage key is 'user'
+  if (storedUser && !currentUser) {
+    useStore.getState().setCurrentUser(JSON.parse(storedUser));
+  }
+}, []);
 
   return (
     <nav className="w-full flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 shadow relative">
