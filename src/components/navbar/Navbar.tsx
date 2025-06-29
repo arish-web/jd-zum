@@ -7,6 +7,8 @@ export default function Navbar() {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const currentUser = useStore((state) => state.currentUser);
 
+  console.log("currentUserArish",    currentUser)
+
   return (
     <nav className="w-full flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-900 shadow">
       {/* Left: Brand */}
