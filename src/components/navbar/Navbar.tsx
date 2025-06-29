@@ -2,12 +2,20 @@ import { Link } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import { Sun, Moon } from "lucide-react";
 import { useStore } from "../../store/index";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const currentUser = useStore((state) => state.currentUser);
 
-  console.log("currentUserArish",    currentUser)
+  console.log("currentUserArish", currentUser);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  console.log("userRole", userRole);
+
+  useEffect(() => {
+    setUserRole(currentUser?.role || null);
+    console.log("currentUser updated in Navbar:", currentUser);
+  }, [currentUser]);
 
   return (
     <nav className="w-full flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-900 shadow">
@@ -18,7 +26,6 @@ export default function Navbar() {
 
       {/* Right: Links + Toggle */}
       <div className="flex items-center space-x-6">
-
         {currentUser?.role === "tattoo" && (
           <Link
             to="/tattoos"
@@ -40,7 +47,7 @@ export default function Navbar() {
             Photography
           </Link>
         )}
-          {currentUser?.role === "client" && (
+        {currentUser?.role === "client" && (
           <Link
             to="/service"
             className={`text-md font-medium hover:text-blue-600 ${
@@ -92,7 +99,6 @@ export default function Navbar() {
         >
           {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
         </button>
-        
       </div>
     </nav>
   );
