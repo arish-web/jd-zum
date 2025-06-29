@@ -18,9 +18,8 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set) => {
-  const storedUser = sessionStorage.getItem("user");
+  const storedUser = sessionStorage.getItem("currentUser"); // <- updated
   const storedToken = sessionStorage.getItem("token");
-
 
   return {
     isDarkMode: false,
@@ -29,7 +28,7 @@ export const useStore = create<AppState>((set) => {
     currentUser: storedUser ? JSON.parse(storedUser) : null,
     setCurrentUser: (user) => {
       if (user) {
-        sessionStorage.setItem("currentUser", JSON.stringify(user));
+        sessionStorage.setItem("currentUser", JSON.stringify(user)); // <- consistent
       } else {
         sessionStorage.removeItem("currentUser");
       }
@@ -46,3 +45,4 @@ export const useStore = create<AppState>((set) => {
     },
   };
 });
+
