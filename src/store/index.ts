@@ -18,7 +18,7 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set) => {
-  const storedUser = sessionStorage.getItem("currentUser");
+  const storedUser = sessionStorage.getItem("user");
   const storedToken = sessionStorage.getItem("token");
 
 
