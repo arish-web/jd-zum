@@ -69,7 +69,6 @@ function TattoosPage() {
     fetch();
   }, []);
 
-  console.log("tattoos", tattoos);
 
   const handleSave = async () => {
     try {
@@ -92,7 +91,6 @@ function TattoosPage() {
     }
   };
 
-  console.log("currentUser?.role", currentUser?.role);
 
   if (loading) return <div>Loading...</div>;
 

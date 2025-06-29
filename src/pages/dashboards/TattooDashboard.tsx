@@ -66,7 +66,6 @@ const categoryData = Object.entries(categoryCount).map(([name, value]) => ({
     fetchAppointments();
   }, [user]);
 
-  console.log("appointments4321", appointments);
 
   return (
     <div

@@ -54,8 +54,6 @@ function TattooDetails() {
     fetchTattoo();
   }, [id]);
 
-  // console.log("data",   data)
-  console.log("data", tattoo);
 
   if (loading) return <div>Loading...</div>;
   if (!tattoo) return <div>Tattoo not found</div>;

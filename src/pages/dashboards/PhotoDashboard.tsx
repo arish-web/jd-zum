@@ -55,8 +55,6 @@ const PhotoDashboard: React.FC = () => {
     value,
   }));
 
-  console.log("user12345", user);
-  console.log("arishcheCk", appointments);
 
   useEffect(() => {
     const fetchAppointments = async () => {

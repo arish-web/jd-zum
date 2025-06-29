@@ -67,7 +67,6 @@ const ClientDashboard: React.FC = () => {
     fetchAppointments();
   }, [user]);
 
-  console.log("appointments12", appointments);
 
   return (
     <div
