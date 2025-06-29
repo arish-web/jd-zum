@@ -10,6 +10,7 @@ import type { Tattoo } from "../types";
 
 function ServicesPage() {
   const { isDarkMode } = useTheme();
+  const [loading, setLoading] = useState(true);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [tattoos, setTattoos] = useState<Tattoo[]>([]);
   const [filter, setFilter] = useState<"all" | "photos" | "tattoos">("all");
@@ -23,6 +24,8 @@ function ServicesPage() {
         setTattoos(tattooRes.data);
       } catch (err) {
         console.error("Error fetching services:", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -36,6 +39,8 @@ function ServicesPage() {
       ? tattoos.map((item) => ({ ...item, type: "tattoo" }))
       : []),
   ];
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div

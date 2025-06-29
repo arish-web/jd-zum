@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import { Sun, Moon } from "lucide-react";
 import { useStore } from "../../store/index";
-import { useEffect } from "react";
 
 export default function Navbar() {
   const { isDarkMode, toggleDarkMode } = useTheme();
@@ -11,18 +10,6 @@ export default function Navbar() {
   const linkClass = `text-md font-medium hover:text-blue-600 ${
     isDarkMode ? "text-gray-300" : "text-gray-700"
   }`;
-
-  useEffect(() => {
-  const storedUser = sessionStorage.getItem("user");
-  if (storedUser && !currentUser) {
-    try {
-      const parsedUser = JSON.parse(storedUser);
-      useStore.getState().setCurrentUser(parsedUser);
-    } catch (err) {
-      console.error("Failed to parse user from session:", err);
-    }
-  }
-}, []);
 
   return (
     <nav className="w-full flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-900 shadow">

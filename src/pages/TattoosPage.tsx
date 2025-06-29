@@ -24,7 +24,6 @@ import Navbar from "../components/navbar/Navbar";
 function TattoosPage() {
   const { isDarkMode } = useTheme();
   const currentUser = useStore((state) => state.currentUser);
-
   const [loading, setLoading] = useState(true);
   const [tattoos, setTattoos] = useState<Tattoo[]>([]);
   const [editingTattoo, setEditingTattoo] = useState<Tattoo | null>(null);
