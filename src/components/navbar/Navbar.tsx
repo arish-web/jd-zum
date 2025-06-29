@@ -7,7 +7,7 @@ export default function Navbar() {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const currentUser = useStore((state) => state.currentUser);
 
-  if (!currentUser) return null; // or return a loading skeleton
+  console.log("Navbar currentUser:", currentUser); // ✅ check this output in devtools
 
   const linkClass = `text-md font-medium hover:text-blue-600 ${
     isDarkMode ? "text-gray-300" : "text-gray-700"
@@ -22,7 +22,7 @@ export default function Navbar() {
 
       {/* Right: Links + Toggle */}
       <div className="flex items-center space-x-6">
-        {currentUser.role === "tattoo" && (
+        {currentUser?.role === "tattoo" && (
           <>
             <Link to="/tattoos" className={linkClass}>
               Tattoos
@@ -33,7 +33,7 @@ export default function Navbar() {
           </>
         )}
 
-        {currentUser.role === "photo" && (
+        {currentUser?.role === "photo" && (
           <>
             <Link to="/photos" className={linkClass}>
               Photography
@@ -44,7 +44,7 @@ export default function Navbar() {
           </>
         )}
 
-        {currentUser.role === "client" && (
+        {currentUser?.role === "client" && (
           <>
             <Link to="/service" className={linkClass}>
               Services
