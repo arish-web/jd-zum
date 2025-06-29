@@ -2,20 +2,10 @@ import { Link } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import { Sun, Moon } from "lucide-react";
 import { useStore } from "../../store/index";
-import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const currentUser = useStore((state) => state.currentUser);
-
-  console.log("currentUserArish", currentUser);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  console.log("userRole", userRole);
-
-  useEffect(() => {
-    setUserRole(currentUser?.role || null);
-    console.log("currentUser updated in Navbar:", currentUser);
-  }, [currentUser]);
 
   return (
     <nav className="w-full flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-900 shadow">
@@ -27,68 +17,66 @@ export default function Navbar() {
       {/* Right: Links + Toggle */}
       <div className="flex items-center space-x-6">
         {currentUser?.role === "tattoo" && (
-          <Link
-            to="/tattoos"
-            className={`text-md font-medium hover:text-blue-600 ${
-              isDarkMode ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            Tattoos
-          </Link>
+          <>
+            <Link
+              to="/tattoos"
+              className={`text-md font-medium hover:text-blue-600 ${
+                isDarkMode ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              Tattoos
+            </Link>
+            <Link
+              to="/dashboard/tattoo"
+              className={`text-md font-medium hover:text-blue-600 ${
+                isDarkMode ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              Dashboard
+            </Link>
+          </>
         )}
 
         {currentUser?.role === "photo" && (
-          <Link
-            to="/photos"
-            className={`text-md font-medium hover:text-blue-600 ${
-              isDarkMode ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            Photography
-          </Link>
-        )}
-        {currentUser?.role === "client" && (
-          <Link
-            to="/service"
-            className={`text-md font-medium hover:text-blue-600 ${
-              isDarkMode ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            Services
-          </Link>
-        )}
-
-        {currentUser?.role === "tattoo" && (
-          <Link
-            to="/dashboard/tattoo"
-            className={`text-md font-medium hover:text-blue-600 ${
-              isDarkMode ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            Dashboard
-          </Link>
-        )}
-
-        {currentUser?.role === "photo" && (
-          <Link
-            to="/dashboard/photo"
-            className={`text-md font-medium hover:text-blue-600 ${
-              isDarkMode ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            Dashboard
-          </Link>
+          <>
+            <Link
+              to="/photos"
+              className={`text-md font-medium hover:text-blue-600 ${
+                isDarkMode ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              Photography
+            </Link>
+            <Link
+              to="/dashboard/photo"
+              className={`text-md font-medium hover:text-blue-600 ${
+                isDarkMode ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              Dashboard
+            </Link>
+          </>
         )}
 
         {currentUser?.role === "client" && (
-          <Link
-            to="/dashboard/client"
-            className={`text-md font-medium hover:text-blue-600 ${
-              isDarkMode ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            Dashboard
-          </Link>
+          <>
+            <Link
+              to="/service"
+              className={`text-md font-medium hover:text-blue-600 ${
+                isDarkMode ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              Services
+            </Link>
+            <Link
+              to="/dashboard/client"
+              className={`text-md font-medium hover:text-blue-600 ${
+                isDarkMode ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              Dashboard
+            </Link>
+          </>
         )}
 
         <button
