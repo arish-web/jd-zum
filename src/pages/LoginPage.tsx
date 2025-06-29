@@ -5,6 +5,8 @@ import { loginUser } from "../api/auth";
 import { useAuth } from '../context/AuthContext';
 import Notiflix from "notiflix";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 
 export function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -118,6 +120,15 @@ export function Login() {
           >
             Sign In
           </button>
+            <div className="text-center mt-2">
+    <span className="text-sm text-gray-600">Don't have an account? </span>
+    <Link
+      to="/register"
+      className="text-blue-600 hover:underline font-medium"
+    >
+      Sign Up
+    </Link>
+  </div>
         </form>
       </div>
     </div>

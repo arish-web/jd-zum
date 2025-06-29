@@ -7,7 +7,7 @@ import {
 import type { ReactNode } from "react";
 import { useAuth } from "./context/AuthContext";
 import { Login } from "./pages/LoginPage";
-import { Register } from "./pages/RegisterPage";
+// import { Register } from "./pages/RegisterPage";
 import TattooDashboard from "./pages/dashboards/TattooDashboard";
 import PhotoDashboard from "./pages/dashboards/PhotoDashboard";
 import ClientDashboard from "./pages/dashboards/ClientDashboard";
@@ -27,8 +27,8 @@ export default function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Login />} />
         <Route
           path="/dashboard/tattoo"
           element={
