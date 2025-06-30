@@ -32,7 +32,6 @@ function TattoosPage() {
   const [tattoos, setTattoos] = useState<Tattoo[]>([]);
   const [editingTattoo, setEditingTattoo] = useState<Tattoo | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [disabled, setDisabled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -123,16 +122,8 @@ function TattoosPage() {
           <>
             {!showForm ? (
               <button
-                onClick={() => {
-                  setDisabled(true); // Disable the button immediately
-                  setShowForm(true); // Trigger your logic
-                }}
-                disabled={disabled}
-                className={`mt-4 flex items-center px-4 py-3 text-white rounded-lg transition ${
-                  disabled
-                    ? "bg-blue-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                }`}
+                onClick={() => setShowForm(true)}
+                className="mt-4 flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Tattoo
@@ -269,12 +260,7 @@ function TattoosPage() {
                 <div className="col-span-full flex gap-4 mt-4">
                   <button
                     type="submit"
-                    disabled={disabled}
-                    className={`mt-4 flex items-center px-4 py-3 text-white rounded-lg transition ${
-                      disabled
-                        ? "bg-blue-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    }`}
+                    className="mt-4 flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                   >
                     {editingTattoo ? "Update Tattoo" : "Add Tattoo"}
                   </button>
