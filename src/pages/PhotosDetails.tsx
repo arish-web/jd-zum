@@ -7,6 +7,18 @@ import type { Appointment } from "../types";
 import Notiflix from "notiflix";
 import { createAppointment } from "../api/appointment";
 
+Notiflix.Confirm.init({
+  width: '320px',
+  borderRadius: '8px',
+  titleColor: '#3B82F6', // Tailwind blue-500
+  messageColor: '#333',
+  backgroundColor: '#fff',
+  okButtonBackground: 'linear-gradient(to right, #3B82F6, #8B5CF6)', // blue-500 to purple-600
+  okButtonColor: '#fff',
+  cancelButtonBackground: '#f3f4f6',
+  cancelButtonColor: '#374151',
+  fontFamily: 'inherit',
+});
 
 function PhotosDetails() {
   const { id } = useParams<{ id: string }>();
@@ -17,25 +29,24 @@ function PhotosDetails() {
   const [loading, setLoading] = useState(true);
 
   const handleMakePhotoAppointment = async () => {
-  if (!currentUser || currentUser.role !== "client" || !photo) return;
+    if (!currentUser || currentUser.role !== "client" || !photo) return;
 
-  const newAppointment: Appointment = {
-    createdAt: new Date().toISOString(),
-    userId: { name: currentUser.name },
-    serviceId: { title: photo.title },
-    serviceType: "photo",
-    status: "pending",
+    const newAppointment: Appointment = {
+      createdAt: new Date().toISOString(),
+      userId: { name: currentUser.name },
+      serviceId: { title: photo.title },
+      serviceType: "photo",
+      status: "pending",
+    };
+
+    try {
+      await createAppointment(newAppointment);
+      Notiflix.Notify.success("Photo appointment requested successfully!");
+    } catch (err) {
+      console.error("Photo Appointment Error:", err);
+      Notiflix.Notify.failure("Failed to create photo appointment.");
+    }
   };
-
-  try {
-    await createAppointment(newAppointment);
-    Notiflix.Notify.success("Photo appointment requested successfully!");
-  } catch (err) {
-    console.error("Photo Appointment Error:", err);
-    Notiflix.Notify.failure("Failed to create photo appointment.");
-  }
-};
-
 
   useEffect(() => {
     if (!id) return;
@@ -59,12 +70,20 @@ function PhotosDetails() {
   if (!photo) return <div>Photo not found</div>;
 
   return (
-    <div className={`${isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"} w-full min-h-screen`}>
+    <div
+      className={`${
+        isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"
+      } w-full min-h-screen`}
+    >
       {/* Banner */}
       <div className="relative w-full h-[80vh] overflow-hidden">
         {photo.image ? (
           <img
-            src={typeof photo.image === "string" ? photo.image : URL.createObjectURL(photo.image)}
+            src={
+              typeof photo.image === "string"
+                ? photo.image
+                : URL.createObjectURL(photo.image)
+            }
             alt={photo.title}
             className="w-full h-full object-cover object-center"
           />
@@ -87,9 +106,16 @@ function PhotosDetails() {
         {/* Info */}
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4 text-lg text-gray-700 dark:text-gray-300">
-            <div><span className="font-semibold">Photographer:</span> {photo.photographer}</div>
-            <div><span className="font-semibold">Date:</span> {photo.date}</div>
-            <div><span className="font-semibold">Category:</span> {photo.category}</div>
+            <div>
+              <span className="font-semibold">Photographer:</span>{" "}
+              {photo.photographer}
+            </div>
+            <div>
+              <span className="font-semibold">Date:</span> {photo.date}
+            </div>
+            <div>
+              <span className="font-semibold">Category:</span> {photo.category}
+            </div>
           </div>
 
           <div className="text-4xl font-bold text-blue-500">₹{photo.price}</div>
@@ -103,7 +129,19 @@ function PhotosDetails() {
 
           {currentUser?.role === "client" && (
             <button
-              onClick={handleMakePhotoAppointment}
+              onClick={() => {
+                Notiflix.Confirm.show(
+                  "Confirm Appointment",
+                  "Are you sure you want to make this appointment?",
+                  "Yes",
+                  "No",
+                  async () => {
+                    try {
+                      await handleMakePhotoAppointment();
+                    } catch (err) {}
+                  }
+                );
+              }}
               className="mt-6 inline-block px-6 py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-full shadow-md transition-all duration-300"
             >
               Make an Appointment
@@ -113,9 +151,15 @@ function PhotosDetails() {
 
         {/* Photo Preview */}
         <div className="rounded-2xl bg-gray-100 dark:bg-gray-800 p-8 shadow-xl h-fit">
-          <h3 className="text-2xl font-semibold mb-4 text-center">Photo Preview</h3>
+          <h3 className="text-2xl font-semibold mb-4 text-center">
+            Photo Preview
+          </h3>
           <img
-            src={typeof photo.image === "string" ? photo.image : URL.createObjectURL(photo.image)}
+            src={
+              typeof photo.image === "string"
+                ? photo.image
+                : URL.createObjectURL(photo.image)
+            }
             alt="Photo"
             className="rounded-xl object-cover w-full h-80"
           />

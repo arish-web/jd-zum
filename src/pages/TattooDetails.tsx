@@ -8,6 +8,19 @@ import { getTattooById } from "../api/tattoo";
 import Notiflix from "notiflix";
 import { createAppointment } from "../api/appointment";
 
+Notiflix.Confirm.init({
+  width: '320px',
+  borderRadius: '8px',
+  titleColor: '#3B82F6', // Tailwind blue-500
+  messageColor: '#333',
+  backgroundColor: '#fff',
+  okButtonBackground: 'linear-gradient(to right, #3B82F6, #8B5CF6)', // blue-500 to purple-600
+  okButtonColor: '#fff',
+  cancelButtonBackground: '#f3f4f6',
+  cancelButtonColor: '#374151',
+  fontFamily: 'inherit',
+});
+
 function TattooDetails() {
   const { id } = useParams<{ id: string }>();
   const isDarkMode = useStore((state) => state.isDarkMode);
@@ -53,7 +66,6 @@ function TattooDetails() {
 
     fetchTattoo();
   }, [id]);
-
 
   if (loading) return <div>Loading...</div>;
   if (!tattoo) return <div>Tattoo not found</div>;
@@ -122,9 +134,22 @@ function TattooDetails() {
               {tattoo.description}
             </p>
           </div>
-          {currentUser?.role === "client" && tattoo && (
+          {currentUser?.role === "client" && (
             <button
-              onClick={handleMakeTattooAppointment}
+              onClick={() => {
+                Notiflix.Confirm.show(
+                  "Confirm Appointment",
+                  "Are you sure you want to make this appointment?",
+                  "Yes",
+                  "No",
+                  async () => {
+                    try {
+                      await handleMakeTattooAppointment();
+                    } catch (err) {
+                    }
+                  }
+                );
+              }}
               className="mt-6 inline-block px-6 py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-full shadow-md transition-all duration-300"
             >
               Make an Appointment
