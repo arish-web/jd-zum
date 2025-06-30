@@ -35,7 +35,7 @@ export function Register() {
       };
       await registerUser(payload);
       Notiflix.Notify.success("Registration successful!");
-      navigate("/login");
+      navigate("/");
     } catch (error: any) {
       console.error("Registration failed:", error);
       const msg =
