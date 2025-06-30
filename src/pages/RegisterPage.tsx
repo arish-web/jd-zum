@@ -9,6 +9,7 @@ export function Register() {
   const navigate = useNavigate();
   const [isDarkMode] = useState(false); // You can later manage this via context or settings
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,6 +20,8 @@ export function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+     if (loading) return; // Prevent duplicate triggers
+    setLoading(true); 
     try {
       const payload = {
         name: formData.name,
@@ -40,6 +43,8 @@ export function Register() {
         error?.message ||
         "Something went wrong. Please try again.";
       Notiflix.Notify.failure(msg);
+    } finally {
+      setLoading(false); // Re-enable button
     }
   };
 
@@ -168,7 +173,12 @@ export function Register() {
 
           <button
             type="submit"
-            className="w-full mt-2 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition shadow"
+            disabled={loading}
+            className={`w-full mt-2 py-2 px-4 font-semibold rounded-md transition shadow text-white ${
+              loading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
             Create Account
           </button>

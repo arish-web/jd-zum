@@ -10,12 +10,14 @@ import { Link } from "react-router-dom";
 export function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (loading) return; // Prevent duplicate triggers
+    setLoading(true); // Disable button
     try {
       const payload = {
         email: formData.email,
@@ -55,6 +57,8 @@ export function Login() {
         error?.message ||
         "Something went wrong. Please try again.";
       Notiflix.Notify.failure(msg);
+    } finally {
+      setLoading(false); // Re-enable button
     }
   };
 
@@ -115,7 +119,12 @@ export function Login() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            disabled={loading}
+            className={`w-full py-2 rounded-lg transition text-white ${
+              loading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
             Sign In
           </button>
