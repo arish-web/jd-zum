@@ -1,14 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Search,
-  Pencil,
-  Trash2,
-  Plus,
-  // Clock,
-  // Image as ImageIcon,
-  // User as UserIcon,
-} from "lucide-react";
+import { Search, Pencil, Trash2, Plus } from "lucide-react";
 import Notiflix from "notiflix";
 import {
   getAllTattoos,
@@ -18,8 +10,20 @@ import {
 } from "../api/tattoo"; // adjust your paths
 import { useTheme } from "../context/ThemeContext";
 import { useStore } from "../store/index";
-import type { Tattoo } from "../types";
 import Navbar from "../components/navbar/Navbar";
+
+export interface Tattoo {
+  _id?: string;
+  title: string;
+  description: string;
+  artist: string;
+  style: string;
+  category: string;
+  date: string; // ISO string is fine
+  price: string;
+  uniqueCode: string;
+  image: string | File;
+}
 
 function TattoosPage() {
   const { isDarkMode } = useTheme();
@@ -39,16 +43,16 @@ function TattoosPage() {
     style: "",
     category: "",
     date: "",
-    price: 0,
+    price: "",
     uniqueCode: "",
-    image: "", // If you’re storing just the URL or base64 string
+    image: "",
   };
 
   Notiflix.Confirm.init({
-    titleColor: "#DC2626", // Tailwind red-600
-    okButtonBackground: "#DC2626", // Red "Yes" button
+    titleColor: "#DC2626",
+    okButtonBackground: "#DC2626",
     okButtonColor: "#fff",
-    cancelButtonBackground: "#E5E7EB", // Tailwind gray-200
+    cancelButtonBackground: "#E5E7EB",
     cancelButtonColor: "#000",
   });
 
@@ -68,17 +72,16 @@ function TattoosPage() {
     fetch();
   }, []);
 
-
   const handleSave = async () => {
     try {
       if (editingTattoo) {
         const response = await updateTattoo(editingTattoo._id, newTattoo);
-        const updated = response.data; // ✅ extract data
+        const updated = response.data;
         setTattoos(tattoos.map((t) => (t._id === updated._id ? updated : t)));
         Notiflix.Notify.success("Tattoo updated successfully");
       } else {
         const response = await addTattoo(newTattoo);
-        const created = response.data; // ✅ extract data
+        const created = response.data;
         setTattoos([...tattoos, created]);
         Notiflix.Notify.success("Tattoo added successfully");
       }
@@ -89,7 +92,6 @@ function TattoosPage() {
       Notiflix.Notify.failure("Failed to save tattoo");
     }
   };
-
 
   if (loading) return <div>Loading...</div>;
 
@@ -192,7 +194,7 @@ function TattoosPage() {
                   onChange={(e) =>
                     setNewTattoo({
                       ...newTattoo,
-                      price: Number(e.target.value),
+                      price: e.target.value,
                     })
                   }
                   required
@@ -260,7 +262,6 @@ function TattoosPage() {
                     type="submit"
                     className="mt-4 flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                   >
-                    {/* <Plus className="w-4 h-4 mr-2" /> */}
                     {editingTattoo ? "Update Tattoo" : "Add Tattoo"}
                   </button>
                   <button
