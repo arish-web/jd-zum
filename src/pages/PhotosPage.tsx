@@ -22,6 +22,7 @@ export interface Photo {
   price: string;
   uniqueCode: string;
   image: string | File;
+  ownerId: string;
 }
 
 function PhotosPage() {
@@ -45,6 +46,7 @@ function PhotosPage() {
     price: "",
     uniqueCode: "",
     image: "",
+    ownerId: "",
   };
 
   Notiflix.Confirm.init({
@@ -263,7 +265,7 @@ function PhotosPage() {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {photos.map((photo) => (
+        {photos.filter((photo) => photo.ownerId === currentUser?._id).map((photo) => (
           <div
             key={photo._id}
             className={`relative group overflow-hidden transition-all duration-300 ${

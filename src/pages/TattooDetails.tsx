@@ -38,6 +38,7 @@ function TattooDetails() {
       serviceId: { title: tattoo.title },
       serviceType: "tattoo",
       status: "pending",
+      paymentStatus: "Unpaid",
     };
 
     try {

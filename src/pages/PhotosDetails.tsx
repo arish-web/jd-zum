@@ -37,6 +37,7 @@ function PhotosDetails() {
       serviceId: { title: photo.title },
       serviceType: "photo",
       status: "pending",
+      paymentStatus: "Unpaid",
     };
 
     try {

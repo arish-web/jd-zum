@@ -166,7 +166,7 @@ const TattooDashboard: React.FC = () => {
         } rounded-lg shadow-md mb-10`}
       >
         <h3 className="text-xl font-bold p-6 border-b border-gray-200 dark:border-gray-700">
-          Recent Photo Appointments
+          Recent Tattoo Appointments
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -186,7 +186,7 @@ const TattooDashboard: React.FC = () => {
                     isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"
                   }`}
                 >
-                  <td className="px-6 py-4">{app.userId.name}</td>
+                  <td className="px-6 py-4">{app.userId?.name ?? "Unknown User"}</td>
                   <td className="px-6 py-4">{app.serviceId.title}</td>
                   <td className="px-6 py-4">
                     {new Date(app.createdAt).toLocaleDateString("en-GB")}

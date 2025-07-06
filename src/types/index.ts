@@ -16,6 +16,7 @@ export interface Tattoo {
   price: number;
   uniqueCode: string;
   image: string | File;
+  ownerId: string;
 }
 
 export interface Photo {
@@ -44,17 +45,20 @@ export interface Photo {
 
 
 export interface Appointment {
-  _id?: string;
+  _id: string;
   createdAt: string;
   userId: {
+    _id?: string;
     name: string;
   };
   serviceType: "tattoo" | "photo";
   serviceId: {
     title: string;
     category?: string
+    price?: number;
   };
   status: "pending" | "confirmed" | "cancelled" | "accepted";
+  paymentStatus: "Unpaid" | "Paid"; 
 }
 
 export type Service = {

@@ -23,6 +23,7 @@ export interface Tattoo {
   price: string;
   uniqueCode: string;
   image: string | File;
+  ownerId: string;
 }
 
 function TattoosPage() {
@@ -46,6 +47,7 @@ function TattoosPage() {
     price: "",
     uniqueCode: "",
     image: "",
+    ownerId: "",
   };
 
   Notiflix.Confirm.init({
@@ -284,7 +286,7 @@ function TattoosPage() {
 
       {/* List */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tattoos.map((tattoo) => (
+        {tattoos.filter((tattoo) => tattoo.ownerId === currentUser?._id).map((tattoo) => (
           <div
             key={tattoo._id}
             className={`relative group overflow-hidden transition-all duration-300 ${
