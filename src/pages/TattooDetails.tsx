@@ -3,22 +3,21 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../store/index";
 import type { Tattoo } from "../types";
 import type { Appointment } from "../types";
-// import type { Photo } from "../types";
 import { getTattooById } from "../api/tattoo";
 import Notiflix from "notiflix";
 import { createAppointment } from "../api/appointment";
 
 Notiflix.Confirm.init({
-  width: '320px',
-  borderRadius: '8px',
-  titleColor: '#3B82F6', // Tailwind blue-500
-  messageColor: '#333',
-  backgroundColor: '#fff',
-  okButtonBackground: 'linear-gradient(to right, #3B82F6, #8B5CF6)', // blue-500 to purple-600
-  okButtonColor: '#fff',
-  cancelButtonBackground: '#f3f4f6',
-  cancelButtonColor: '#374151',
-  fontFamily: 'inherit',
+  width: "320px",
+  borderRadius: "8px",
+  titleColor: "#3B82F6", // Tailwind blue-500
+  messageColor: "#333",
+  backgroundColor: "#fff",
+  okButtonBackground: "linear-gradient(to right, #3B82F6, #8B5CF6)", // blue-500 to purple-600
+  okButtonColor: "#fff",
+  cancelButtonBackground: "#f3f4f6",
+  cancelButtonColor: "#374151",
+  fontFamily: "inherit",
 });
 
 function TattooDetails() {
@@ -33,9 +32,14 @@ function TattooDetails() {
     if (!currentUser || currentUser.role !== "client" || !tattoo) return;
 
     const newAppointment: Appointment = {
+      _id: "",
       createdAt: new Date().toISOString(),
-      userId: { name: currentUser.name },
-      serviceId: { title: tattoo.title },
+      userId: { _id: currentUser._id, name: currentUser.name },
+      serviceId: {
+        title: tattoo.title,
+        category: tattoo.category,
+        price: tattoo.price,
+      },
       serviceType: "tattoo",
       status: "pending",
       paymentStatus: "Unpaid",
@@ -146,8 +150,7 @@ function TattooDetails() {
                   async () => {
                     try {
                       await handleMakeTattooAppointment();
-                    } catch (err) {
-                    }
+                    } catch (err) {}
                   }
                 );
               }}

@@ -8,16 +8,16 @@ import Notiflix from "notiflix";
 import { createAppointment } from "../api/appointment";
 
 Notiflix.Confirm.init({
-  width: '320px',
-  borderRadius: '8px',
-  titleColor: '#3B82F6', // Tailwind blue-500
-  messageColor: '#333',
-  backgroundColor: '#fff',
-  okButtonBackground: 'linear-gradient(to right, #3B82F6, #8B5CF6)', // blue-500 to purple-600
-  okButtonColor: '#fff',
-  cancelButtonBackground: '#f3f4f6',
-  cancelButtonColor: '#374151',
-  fontFamily: 'inherit',
+  width: "320px",
+  borderRadius: "8px",
+  titleColor: "#3B82F6", // Tailwind blue-500
+  messageColor: "#333",
+  backgroundColor: "#fff",
+  okButtonBackground: "linear-gradient(to right, #3B82F6, #8B5CF6)", // blue-500 to purple-600
+  okButtonColor: "#fff",
+  cancelButtonBackground: "#f3f4f6",
+  cancelButtonColor: "#374151",
+  fontFamily: "inherit",
 });
 
 function PhotosDetails() {
@@ -32,9 +32,14 @@ function PhotosDetails() {
     if (!currentUser || currentUser.role !== "client" || !photo) return;
 
     const newAppointment: Appointment = {
+      _id: "",
       createdAt: new Date().toISOString(),
-      userId: { name: currentUser.name },
-      serviceId: { title: photo.title },
+      userId: { _id: currentUser._id, name: currentUser.name },
+      serviceId: {
+        title: photo.title,
+        category: photo.category, 
+        price: photo.price,
+      },
       serviceType: "photo",
       status: "pending",
       paymentStatus: "Unpaid",
