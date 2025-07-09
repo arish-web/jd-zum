@@ -197,7 +197,7 @@ const PhotoDashboard: React.FC = () => {
                     isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"
                   }`}
                 >
-                  <td className="px-6 py-4">{app.userId.name ?? "Unknown User"}</td>
+                  <td className="px-6 py-4">{app.userId.name}</td>
                   <td className="px-6 py-4">{app.serviceId.title}</td>
                   <td className="px-6 py-4">
                     {new Date(app.createdAt).toLocaleDateString("en-GB")}
