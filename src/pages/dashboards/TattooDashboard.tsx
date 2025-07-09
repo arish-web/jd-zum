@@ -176,6 +176,7 @@ const TattooDashboard: React.FC = () => {
                 <th className="px-6 py-3 text-left">Title</th>
                 <th className="px-6 py-3 text-left">Date</th>
                 <th className="px-6 py-3 text-left">Status</th>
+                <th className="px-6 py-3 text-left">Payment</th>
               </tr>
             </thead>
             <tbody>
@@ -186,7 +187,9 @@ const TattooDashboard: React.FC = () => {
                     isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"
                   }`}
                 >
-                  <td className="px-6 py-4">{app.userId?.name ?? "Unknown User"}</td>
+                  <td className="px-6 py-4">
+                    {app.userId?.name ?? "Unknown User"}
+                  </td>
                   <td className="px-6 py-4">{app.serviceId.title}</td>
                   <td className="px-6 py-4">
                     {new Date(app.createdAt).toLocaleDateString("en-GB")}
@@ -219,6 +222,19 @@ const TattooDashboard: React.FC = () => {
                     >
                       {/* {app.status} */}
                       {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium
+              ${
+                app.paymentStatus === "Paid"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-yellow-100 text-yellow-700"
+              }
+            `}
+                    >
+                      {app.paymentStatus}
                     </span>
                   </td>
                 </tr>

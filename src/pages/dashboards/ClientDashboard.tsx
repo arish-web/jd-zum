@@ -17,6 +17,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect, useMemo } from "react";
 import type { Appointment } from "../../types";
 import { getAppointmentsForUser } from "../../api/appointment";
+import PaymentModal from "../../components/PaymentModal";
 
 const COLORS = ["#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
@@ -24,6 +25,9 @@ const ClientDashboard: React.FC = () => {
   const { isDarkMode } = useTheme();
   const { user } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
+  const [showQRModal, setShowQRModal] = useState(false);
 
   const chartData = useMemo(() => {
     const counts: { [key: string]: number } = {};
@@ -39,6 +43,11 @@ const ClientDashboard: React.FC = () => {
       bookings,
     }));
   }, [appointments]);
+
+  const handlePayment = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setShowQRModal(true);
+  };
 
   const categoryCount = appointments.reduce((acc, app) => {
     const category = app?.serviceId?.category;
@@ -155,6 +164,7 @@ const ClientDashboard: React.FC = () => {
                 <th className="px-6 py-3 text-left">Service Name</th>
                 <th className="px-6 py-3 text-left">Applied Date</th>
                 <th className="px-6 py-3 text-left">Status</th>
+                <th className="px-6 py-3 text-left">Payment</th>
               </tr>
             </thead>
             <tbody>
@@ -201,12 +211,42 @@ const ClientDashboard: React.FC = () => {
                       {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                     </span>
                   </td>
+                  <td className="px-6 py-4">
+                    {app.paymentStatus === "Paid" ? (
+                      <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
+                        Paid
+                      </span>
+                    ) : (
+                      <button
+                        className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition"
+                        onClick={() => handlePayment(app)} // 🔁 Replace with your payment function
+                      >
+                        Pay Now
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
+      {showQRModal && selectedAppointment && (
+        <PaymentModal
+          appointment={selectedAppointment}
+          onClose={() => setShowQRModal(false)}
+          onSuccess={() =>
+            setAppointments((prev) =>
+              prev.map((app) =>
+                app._id === selectedAppointment._id
+                  ? { ...app, paymentStatus: "Paid" }
+                  : app
+              )
+            )
+          }
+        />
+      )}
     </div>
   );
 };

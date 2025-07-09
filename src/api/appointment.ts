@@ -10,6 +10,16 @@ export const createAppointment = (data: any) => {
   });
 };
 
+export const markAppointmentAsPaid = async (id: string) => {
+  const token = sessionStorage.getItem("authToken"); // or get from auth context
+  return await axios.patch(`/appointments/${id}/pay`, {},{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
 // update the appoinment status
 export const updateAppointmentStatus = (id: string, status: string) => {
   const token = sessionStorage.getItem("authToken");
