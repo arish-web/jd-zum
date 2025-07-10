@@ -23,3 +23,10 @@ export const loginUser = (data: LoginPayload) => {
     },
   });
 };
+
+export const forgotPassword = (email: string) => {
+  return axiosInstance.post(
+    "/forgot-password",
+    { email },
+  );
+}

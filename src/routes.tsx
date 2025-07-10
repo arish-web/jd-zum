@@ -8,6 +8,8 @@ import type { ReactNode } from "react";
 import { useAuth } from "./context/AuthContext";
 import { Login } from "./pages/LoginPage";
 import { Register } from "./pages/RegisterPage";
+import { ForgotPassword } from "./pages/ForgotPassword";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import TattooDashboard from "./pages/dashboards/TattooDashboard";
 import PhotoDashboard from "./pages/dashboards/PhotoDashboard";
 import ClientDashboard from "./pages/dashboards/ClientDashboard";
@@ -16,6 +18,7 @@ import Photos from "./pages/PhotosPage";
 import Services from "./pages/ServicesPage";
 import TattoosDetails from "./pages/TattooDetails";
 import PhotosDetails from "./pages/PhotosDetails";
+
 
 
 const PrivateRoute = ({ children }: { children: ReactNode }) => {
@@ -28,6 +31,8 @@ export default function AppRoutes() {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/dashboard/tattoo"
