@@ -20,7 +20,7 @@ export function ResetPasswordPage() {
     try {
       await resetPassword(token, password);
       Notiflix.Notify.success("Password reset successful");
-      setPassword("")
+      setPassword("");
       navigate("/");
     } catch (err) {
       console.error("Reset error", err);
@@ -53,6 +53,8 @@ export function ResetPasswordPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={8}
+              maxLength={12}
             />
             <span
               onClick={() => setShowPassword(!showPassword)}
