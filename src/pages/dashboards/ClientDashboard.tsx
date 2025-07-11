@@ -18,6 +18,7 @@ import { useState, useEffect, useMemo } from "react";
 import type { Appointment } from "../../types";
 import { getAppointmentsForUser } from "../../api/appointment";
 import PaymentModal from "../../components/PaymentModal";
+import Footer from "../../components/Footer";
 
 const COLORS = ["#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
@@ -231,6 +232,8 @@ const ClientDashboard: React.FC = () => {
           </table>
         </div>
       </div>
+      <Footer />
+
 
       {showQRModal && selectedAppointment && (
         <PaymentModal

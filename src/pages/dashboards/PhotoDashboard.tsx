@@ -21,6 +21,7 @@ import type { Appointment } from "../../types";
 import { getAppointmentsForServiceOwner } from "../../api/appointment";
 import { useState, useEffect } from "react";
 import { updateAppointmentStatus } from "../../api/appointment";
+import Footer from "../../components/Footer";
 
 const COLORS = [
   "#FF6B6B", // Red-ish
@@ -259,7 +260,8 @@ const PhotoDashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div> 
+      <Footer />
     </div>
   );
 };

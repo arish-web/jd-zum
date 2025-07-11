@@ -21,6 +21,8 @@ import { getAppointmentsForServiceOwner } from "../../api/appointment";
 import { updateAppointmentStatus } from "../../api/appointment";
 import Notiflix from "notiflix";
 import StatusModal from "../../components/StatusModal";
+import Footer from "../../components/Footer";
+
 
 const COLORS = ["#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
@@ -249,6 +251,7 @@ const TattooDashboard: React.FC = () => {
           </table>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
