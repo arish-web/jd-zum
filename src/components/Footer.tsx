@@ -16,22 +16,22 @@ const Footer: FC = () => {
           <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
           <ul className="space-y-2 text-gray-300">
             <li>
-              <a href="/" className="hover:text-white transition">
+              <a href="" className="hover:text-white transition">
                 Home
               </a>
             </li>
             <li>
-              <a href="/services" className="hover:text-white transition">
+              <a href="/service" className="hover:text-white transition">
                 Services
               </a>
             </li>
             <li>
-              <a href="/contact" className="hover:text-white transition">
+              <a href="" className="hover:text-white transition">
                 Contact
               </a>
             </li>
             <li>
-              <a href="/about" className="hover:text-white transition">
+              <a href="" className="hover:text-white transition">
                 About
               </a>
             </li>
