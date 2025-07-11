@@ -6,6 +6,9 @@ import type { Photo } from "../types";
 import type { Appointment } from "../types";
 import Notiflix from "notiflix";
 import { createAppointment } from "../api/appointment";
+import PaymentModal from "../components/PaymentModal";
+import { getAppointmentsForUser } from "../api/appointment";
+import { useAuth } from "../context/AuthContext";
 
 Notiflix.Confirm.init({
   width: "320px",
@@ -22,11 +25,21 @@ Notiflix.Confirm.init({
 
 function PhotosDetails() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const isDarkMode = useStore((state) => state.isDarkMode);
   const currentUser = useStore((state) => state.currentUser);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
 
   const [photo, setPhoto] = useState<Photo | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const handlePayment = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setShowQRModal(true);
+  };
 
   const handleMakePhotoAppointment = async () => {
     if (!currentUser || currentUser.role !== "client" || !photo) return;
@@ -37,7 +50,7 @@ function PhotosDetails() {
       userId: { _id: currentUser._id, name: currentUser.name },
       serviceId: {
         title: photo.title,
-        category: photo.category, 
+        category: photo.category,
         price: photo.price,
       },
       serviceType: "photo",
@@ -71,6 +84,20 @@ function PhotosDetails() {
 
     fetchPhoto();
   }, [id]);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      if (!user?._id) return;
+      try {
+        const res = await getAppointmentsForUser(user._id);
+        setAppointments(res.data); // assuming the array is in res.data
+      } catch (err) {
+        console.error("Failed to fetch appointments:", err);
+      }
+    };
+
+    fetchAppointments();
+  }, [user]);
 
   if (loading) return <div>Loading...</div>;
   if (!photo) return <div>Photo not found</div>;
@@ -171,6 +198,116 @@ function PhotosDetails() {
           />
         </div>
       </div>
+
+      {currentUser?.role === "client" && (
+        <div
+          className={`${
+            isDarkMode ? "bg-gray-800" : "bg-white"
+          } rounded-lg shadow-md mb-10`}
+        >
+          <h3 className="text-xl font-bold p-6 border-b border-gray-200 dark:border-gray-700">
+            Recent Bookings
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className={isDarkMode ? "bg-gray-700" : "bg-gray-50"}>
+                <tr>
+                  <th className="px-6 py-3 text-left">Client Name</th>
+                  <th className="px-6 py-3 text-left">Service Type</th>
+                  <th className="px-6 py-3 text-left">Service Name</th>
+                  <th className="px-6 py-3 text-left">Applied Date</th>
+                  <th className="px-6 py-3 text-left">Status</th>
+                  <th className="px-6 py-3 text-left">Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments
+                  .filter((app) => app.serviceId?._id === id)
+                  .map((app) => (
+                    <tr
+                      key={app._id}
+                      className={
+                        isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"
+                      }
+                    >
+                      <td className="px-6 py-4">
+                        {app.userId?.name || "Unknown"}
+                      </td>
+                      <td className="px-6 py-4 capitalize">
+                        {app.serviceType}
+                      </td>
+                      <td className="px-6 py-4">
+                        {app.serviceId?.title || "Untitled"}
+                      </td>
+                      <td className="px-6 py-4">
+                        {new Date(app.createdAt).toLocaleDateString("en-GB")}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer
+                                              ${
+                                                app.status === "pending"
+                                                  ? "bg-red-100 text-red-700"
+                                                  : ""
+                                              }
+                                              ${
+                                                app.status === "accepted"
+                                                  ? "bg-green-100 text-green-700"
+                                                  : ""
+                                              }
+                                              ${
+                                                app.status === "confirmed"
+                                                  ? "bg-blue-100 text-blue-700"
+                                                  : ""
+                                              }
+                                              ${
+                                                app.status === "cancelled"
+                                                  ? "bg-gray-200 text-gray-600"
+                                                  : ""
+                                              }
+                                            `}
+                        >
+                          {app.status.charAt(0).toUpperCase() +
+                            app.status.slice(1)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        {app.paymentStatus === "Paid" ? (
+                          <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
+                            Paid
+                          </span>
+                        ) : (
+                          <button
+                            className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition"
+                            onClick={() => handlePayment(app)} // 🔁 Replace with your payment function
+                          >
+                            Pay Now
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {showQRModal && selectedAppointment && (
+        <PaymentModal
+          appointment={selectedAppointment}
+          onClose={() => setShowQRModal(false)}
+          onSuccess={() =>
+            setAppointments((prev) =>
+              prev.map((app) =>
+                app._id === selectedAppointment._id
+                  ? { ...app, paymentStatus: "Paid" }
+                  : app
+              )
+            )
+          }
+        />
+      )}
     </div>
   );
 }

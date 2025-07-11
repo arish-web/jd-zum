@@ -53,6 +53,7 @@ export interface Appointment {
   };
   serviceType: "tattoo" | "photo";
   serviceId: {
+    _id?: string;
     title: string;
     category?: string
     price?: number;
