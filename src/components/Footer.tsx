@@ -149,7 +149,7 @@ const Footer: FC = () => {
 
       {/* Copyright */}
       <div className="text-center text-sm text-gray-500 mt-8">
-        © 2015 - {new Date().getFullYear()} InkLens Studio. All rights reserved.
+        © 2015 - {new Date().getFullYear()} InkLenz Studio. All rights reserved.
       </div>
     </footer>
   );

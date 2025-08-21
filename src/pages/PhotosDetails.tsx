@@ -9,6 +9,8 @@ import { createAppointment } from "../api/appointment";
 import PaymentModal from "../components/PaymentModal";
 import { getAppointmentsForUser } from "../api/appointment";
 import { useAuth } from "../context/AuthContext";
+// import { useNavigate } from "react-router-dom";
+import RegisterModal from "../components/RegisterModal";
 
 Notiflix.Confirm.init({
   width: "320px",
@@ -26,6 +28,7 @@ Notiflix.Confirm.init({
 function PhotosDetails() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const isDarkMode = useStore((state) => state.isDarkMode);
   const currentUser = useStore((state) => state.currentUser);
   const [showQRModal, setShowQRModal] = useState(false);
@@ -41,7 +44,30 @@ function PhotosDetails() {
     setShowQRModal(true);
   };
 
+  const handleAppointmentClick = () => {
+    if (!user) {
+      // Notiflix.Notify.warning("Please sign in to make an appointment.");
+      setShowRegisterModal(true); // Show modal instead of navigation
+      return;
+    }
+
+    Notiflix.Confirm.show(
+      "Confirm Appointment",
+      "Are you sure you want to make this appointment?",
+      "Yes",
+      "No",
+      async () => {
+        try {
+          await handleMakePhotoAppointment();
+        } catch (err) {
+          Notiflix.Notify.failure("Failed to make appointment.");
+        }
+      }
+    );
+  };
+
   const handleMakePhotoAppointment = async () => {
+    console.log("A11111");
     if (!currentUser || currentUser.role !== "client" || !photo) return;
 
     const newAppointment: Appointment = {
@@ -61,6 +87,7 @@ function PhotosDetails() {
     try {
       await createAppointment(newAppointment);
       Notiflix.Notify.success("Photo appointment requested successfully!");
+      //  setAppointments((prev) => [...prev, { ...newAppointment, _id: created.data._id }]);
     } catch (err) {
       console.error("Photo Appointment Error:", err);
       Notiflix.Notify.failure("Failed to create photo appointment.");
@@ -98,6 +125,12 @@ function PhotosDetails() {
 
     fetchAppointments();
   }, [user]);
+
+  useEffect(() => {
+    if (currentUser) {
+      console.log("Current User:", currentUser);
+    }
+  }, [currentUser]);
 
   if (loading) return <div>Loading...</div>;
   if (!photo) return <div>Photo not found</div>;
@@ -159,8 +192,8 @@ function PhotosDetails() {
               {photo.description}
             </p>
           </div>
-
-          {currentUser?.role === "client" && (
+          {/* 
+          {currentUser?.role === "" && (
             <button
               onClick={() => {
                 Notiflix.Confirm.show(
@@ -179,6 +212,16 @@ function PhotosDetails() {
             >
               Make an Appointment
             </button>
+          )} */}
+          <button
+            onClick={handleAppointmentClick}
+            className="mt-6 inline-block px-6 py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-full shadow-md transition-all duration-300"
+          >
+            Make an Appointment
+          </button>
+
+          {showRegisterModal && (
+            <RegisterModal onClose={() => setShowRegisterModal(false)} />
           )}
         </div>
 

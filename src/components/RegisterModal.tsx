@@ -1,16 +1,16 @@
+// components/modals/RegisterModal.tsx
+import React from "react";
 import { useState } from "react";
-import { UserPlus } from "lucide-react"; // optional icon
 import { registerUser } from "../api/auth"; // Make sure this is correctly set up
 import { useNavigate } from "react-router-dom";
 import Notiflix from "notiflix";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import PhoneInput from 'react-phone-input-2';
 
-
-export function Register() {
+export default function RegisterModal({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate();
-  const [isDarkMode] = useState(false); // You can later manage this via context or settings
+  //   const [isDarkMode] = useState(false); // You can later manage this via context or settings
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -24,8 +24,9 @@ export function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-     if (loading) return; // Prevent duplicate triggers
-    setLoading(true); 
+    if (loading) return;
+    setLoading(true);
+
     try {
       const payload = {
         name: formData.name,
@@ -38,9 +39,20 @@ export function Register() {
             ? formData.company
             : undefined,
       };
-      await registerUser(payload);
+
+      const response = await registerUser(payload);
+
+      // ✅ Save token to sessionStorage
+      sessionStorage.setItem("authToken", response.token);
+
+      // ✅ Optional: Save user info (if needed)
+      sessionStorage.setItem("user", JSON.stringify(response.user));
+
       Notiflix.Notify.success("Registration successful!");
-      navigate("/");
+
+      // Close modal or navigate
+      onClose(); // Close the modal
+      navigate("/"); // Optional: navigate to home or dashboard
     } catch (error: any) {
       console.error("Registration failed:", error);
       const msg =
@@ -49,28 +61,37 @@ export function Register() {
         "Something went wrong. Please try again.";
       Notiflix.Notify.failure(msg);
     } finally {
-      setLoading(false); // Re-enable button
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div
-        className={`${
-          isDarkMode ? "bg-gray-800" : "bg-white"
-        } rounded-xl shadow-xl p-8 w-full max-w-md`}
-      >
-        <div className="flex items-center justify-center mb-6">
-          <UserPlus className="w-10 h-10 text-blue-600" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="relative w-full max-w-md p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-xl transform transition-all scale-100 animate-slide-up">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition"
+        >
+          ✕
+        </button>
+
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
+            Create Account
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Sign up to book appointments and manage your studio.
+          </p>
         </div>
 
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Create Your Account
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium mb-1">Full Name</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">
+              Full Name
+            </label>
             <input
               type="text"
               name="name"
@@ -79,14 +100,14 @@ export function Register() {
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
-              className={`w-full px-4 py-2 rounded-md border ${
-                isDarkMode ? "bg-gray-700" : "bg-gray-100"
-              } focus:ring-2 focus:ring-blue-500`}
+              className="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -95,14 +116,14 @@ export function Register() {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              className={`w-full px-4 py-2 rounded-md border ${
-                isDarkMode ? "bg-gray-700" : "bg-gray-100"
-              } focus:ring-2 focus:ring-blue-500`}
+              className="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
           <div className="relative">
-            <label className="block text-sm font-medium mb-1">Password</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">
+              Password
+            </label>
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -113,12 +134,8 @@ export function Register() {
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
-              className={`w-full px-4 py-2 rounded-md border ${
-                isDarkMode ? "bg-gray-700" : "bg-gray-100"
-              } focus:ring-2 focus:ring-blue-500 pr-10`}
+              className="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 pr-10"
             />
-
-            {/* Toggle Icon */}
             <button
               type="button"
               className="absolute top-9 right-3 text-gray-500"
@@ -126,8 +143,6 @@ export function Register() {
             >
               {showPassword ? <FiEyeOff /> : <FiEye />}
             </button>
-
-            {/* Validation message */}
             {formData.password.length > 0 &&
               (formData.password.length < 8 ||
                 formData.password.length > 12) && (
@@ -137,7 +152,6 @@ export function Register() {
               )}
           </div>
 
-          
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">
               Phone
@@ -157,7 +171,7 @@ export function Register() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">
               Account Type
             </label>
             <select
@@ -166,19 +180,17 @@ export function Register() {
               onChange={(e) =>
                 setFormData({ ...formData, role: e.target.value })
               }
-              className={`w-full px-4 py-2 rounded-md border ${
-                isDarkMode ? "bg-gray-700" : "bg-gray-100"
-              } focus:ring-2 focus:ring-blue-500`}
+              className="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
             >
               <option value="client">Client</option>
-              <option value="tattoo">Tattoo Artist</option>
-              <option value="photo">Photographer</option>
+              {/* <option value="tattoo">Tattoo Artist</option>
+              <option value="photo">Photographer</option> */}
             </select>
           </div>
 
           {(formData.role === "tattoo" || formData.role === "photo") && (
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">
                 Studio Name
               </label>
               <input
@@ -188,9 +200,7 @@ export function Register() {
                 onChange={(e) =>
                   setFormData({ ...formData, company: e.target.value })
                 }
-                className={`w-full px-4 py-2 rounded-md border ${
-                  isDarkMode ? "bg-gray-700" : "bg-gray-100"
-                } focus:ring-2 focus:ring-blue-500`}
+                className="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
               />
             </div>
           )}
@@ -198,13 +208,13 @@ export function Register() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full mt-2 py-2 px-4 font-semibold rounded-md transition shadow text-white ${
+            className={`w-full py-2 px-4 font-semibold rounded-lg transition text-white shadow-md ${
               loading
                 ? "bg-blue-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+                : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
             }`}
           >
-            Create Account
+            {loading ? "Creating..." : "Create Account"}
           </button>
         </form>
       </div>
