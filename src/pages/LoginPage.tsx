@@ -142,7 +142,7 @@ export function Login() {
               Don't have an account?{" "}
             </span>
             <Link
-              to="/register"
+              to="/registermodal"
               className="text-blue-600 hover:underline font-medium"
             >
               Sign Up
