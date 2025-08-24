@@ -2,7 +2,6 @@ export interface User {
   _id?: string;
   name: string;
   email: string;
-  phone: string;
   category: "client" | "tattoo" | "photo";
 }
 
@@ -13,7 +12,7 @@ export interface Tattoo {
   artist: string;
   style: string;
   category: string;
-  date: string; // ISO string is fine
+  date: string;         // ISO string is fine
   price: number;
   uniqueCode: string;
   image: string | File;
@@ -21,7 +20,7 @@ export interface Tattoo {
 }
 
 export interface Photo {
-  _id: "";
+  _id: "",
   title: string;
   photographer: string;
   category:
@@ -44,23 +43,23 @@ export interface Photo {
   deleted?: boolean;
 }
 
+
 export interface Appointment {
   _id: string;
   createdAt: string;
   userId: {
     _id?: string;
     name: string;
-    phone?: string;
   };
   serviceType: "tattoo" | "photo";
   serviceId: {
     _id?: string;
     title: string;
-    category?: string;
+    category?: string
     price?: number;
   };
   status: "pending" | "confirmed" | "cancelled" | "accepted";
-  paymentStatus: "Unpaid" | "Paid";
+  paymentStatus: "Unpaid" | "Paid"; 
 }
 
 export type Service = {

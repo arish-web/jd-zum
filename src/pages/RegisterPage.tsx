@@ -4,9 +4,6 @@ import { registerUser } from "../api/auth"; // Make sure this is correctly set u
 import { useNavigate } from "react-router-dom";
 import Notiflix from "notiflix";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-
 
 export function Register() {
   const navigate = useNavigate();
@@ -17,7 +14,6 @@ export function Register() {
     name: "",
     email: "",
     password: "",
-    phone: "",
     role: "client",
     company: "",
   });
@@ -31,7 +27,6 @@ export function Register() {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        phone: formData.phone,
         role: formData.role as "client" | "tattoo" | "photo",
         company:
           formData.role === "photo" || formData.role === "tattoo"
@@ -135,25 +130,6 @@ export function Register() {
                   Password must be between 8 and 12 characters.
                 </p>
               )}
-          </div>
-
-          
-          <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">
-              Phone
-            </label>
-            <PhoneInput
-              country={"in"} // Default country: India
-              value={formData.phone}
-              onChange={(phone) => setFormData({ ...formData, phone })}
-              inputClass="!w-full !bg-gray-100 dark:!bg-gray-800 !text-gray-800 dark:!text-white !border-gray-300 dark:!border-gray-700 !rounded-lg"
-              buttonClass="!bg-gray-100 dark:!bg-gray-800"
-              containerClass="!w-full"
-              inputStyle={{
-                height: "42px",
-              }}
-              enableSearch
-            />
           </div>
 
           <div>

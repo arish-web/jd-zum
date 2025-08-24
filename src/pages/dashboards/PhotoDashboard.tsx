@@ -21,7 +21,6 @@ import type { Appointment } from "../../types";
 import { getAppointmentsForServiceOwner } from "../../api/appointment";
 import { useState, useEffect } from "react";
 import { updateAppointmentStatus } from "../../api/appointment";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
 import Footer from "../../components/Footer";
 
 const COLORS = [
@@ -41,25 +40,6 @@ const PhotoDashboard: React.FC = () => {
   const { user } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [selected, setSelected] = useState<Appointment | null>(null);
-
-  const formatPhone = (phone: any) => {
-    if (!phone) return "-";
-
-    let phoneStr = phone.toString().trim();
-
-    // Add '+' if missing and assume it's from India (91) if length is 12 and starts with '91'
-    if (!phoneStr.startsWith("+")) {
-      if (phoneStr.length === 12 && phoneStr.startsWith("91")) {
-        phoneStr = "+" + phoneStr;
-      } else {
-        // Fallback for unknown country codes
-        return phoneStr;
-      }
-    }
-
-    const phoneNumber = parsePhoneNumberFromString(phoneStr);
-    return phoneNumber ? phoneNumber.formatInternational() : phoneStr;
-  };
 
   const handleOpenStatusModal = (appointment: Appointment) => {
     setSelected(appointment);
@@ -131,7 +111,7 @@ const PhotoDashboard: React.FC = () => {
       <div className="mb-6">
         <h2 className="text-3xl font-bold mb-1">Photo Dashboard</h2>
         <p className="text-gray-500 dark:text-gray-400">
-          Welcome back, {user?.name || ""}
+          Welcome back, {user?.name}
         </p>
       </div>
 
@@ -208,7 +188,6 @@ const PhotoDashboard: React.FC = () => {
                 <th className="px-6 py-3 text-left">Title</th>
                 <th className="px-6 py-3 text-left">Date</th>
                 <th className="px-6 py-3 text-left">Status</th>
-                <th className="px-6 py-3 text-left">Phone</th>
                 <th className="px-6 py-3 text-left">Payment</th>
               </tr>
             </thead>
@@ -257,8 +236,6 @@ const PhotoDashboard: React.FC = () => {
                       {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                     </span>
                   </td>
-                  <td className="px-6 py-4">{formatPhone(app.userId.phone)}</td>
-
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium
@@ -283,7 +260,7 @@ const PhotoDashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div> 
       <Footer />
     </div>
   );

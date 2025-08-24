@@ -36,8 +36,7 @@ export function Login() {
         // 🔀 Navigate based on role
         switch (user.role) {
           case "client":
-            // navigate("/dashboard/client");
-            navigate("/service");
+            navigate("/dashboard/client");
             break;
           case "photo":
             navigate("/dashboard/photo");

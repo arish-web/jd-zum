@@ -4,15 +4,13 @@ import { Sun, Moon, Menu } from "lucide-react";
 import { useStore } from "../../store/index";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 const linkClass = "text-md font-medium hover:text-blue-600 dark:text-white";
 
 export default function Navbar() {
-  const { currentUser, setCurrentUser } = useStore();
+  const { currentUser } = useStore();
   const { isDarkMode, toggleDarkMode } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   const renderLinks = () => {
     if (!currentUser) return null;
@@ -21,30 +19,22 @@ export default function Navbar() {
       case "tattoo":
         return (
           <>
-            <Link to="/tattoos" className={linkClass}>
-              Tattoos
-            </Link>
-            <Link to="/dashboard/tattoo" className={linkClass}>
-              Dashboard
-            </Link>
+            <Link to="/tattoos" className={linkClass}>Tattoos</Link>
+            <Link to="/dashboard/tattoo" className={linkClass}>Dashboard</Link>
           </>
         );
       case "photo":
         return (
           <>
-            <Link to="/photos" className={linkClass}>
-              Photography
-            </Link>
-            <Link to="/dashboard/photo" className={linkClass}>
-              Dashboard
-            </Link>
+            <Link to="/photos" className={linkClass}>Photography</Link>
+            <Link to="/dashboard/photo" className={linkClass}>Dashboard</Link>
           </>
         );
       case "client":
         return (
           <>
-            {/* <Link to="/service" className={linkClass}>Services</Link>
-            <Link to="/dashboard/client" className={linkClass}>Dashboard</Link> */}
+            <Link to="/service" className={linkClass}>Services</Link>
+            <Link to="/dashboard/client" className={linkClass}>Dashboard</Link>
           </>
         );
       default:
@@ -52,53 +42,21 @@ export default function Navbar() {
     }
   };
 
-  const handleLogout = () => {
-    // Clear auth storage
-    sessionStorage.removeItem("authToken"); // Or however you store user
-    sessionStorage.removeItem("user"); // Optional
-    // Clear any state management (e.g., context/redux)
-    setCurrentUser(null);
-    // Redirect to login or home
-    navigate("/service");
-  };
-
   useEffect(() => {
-    const storedUser = sessionStorage.getItem("user"); // ✅ Make sure your sessionStorage key is 'user'
-    if (storedUser && !currentUser) {
-      useStore.getState().setCurrentUser(JSON.parse(storedUser));
-    }
-  }, []);
+  const storedUser = sessionStorage.getItem("user"); // ✅ Make sure your sessionStorage key is 'user'
+  if (storedUser && !currentUser) {
+    useStore.getState().setCurrentUser(JSON.parse(storedUser));
+  }
+}, []);
 
   return (
     <nav className="w-full flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 shadow relative">
       {/* Logo */}
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-        InkLenz
-      </h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">InkLens</h1>
 
       {/* Desktop Links */}
       <div className="hidden md:flex items-center space-x-6">
         {renderLinks()}
-        {currentUser ? (
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white cursor-default">
-              Hi, {currentUser.name}
-            </h1>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white text-lg font-semibold rounded-md hover:bg-red-700 transition duration-200"
-            >
-              Logout
-            </button>
-          </div>
-        ) : (
-          <Link to="/login">
-            <button className="px-4 py-2 bg-blue-600 text-white text-lg font-semibold rounded-md hover:bg-blue-700 transition duration-200">
-              Sign in
-            </button>
-          </Link>
-        )}
-
         <button
           onClick={toggleDarkMode}
           className={`p-2 rounded-full ${
@@ -123,9 +81,7 @@ export default function Navbar() {
           <button
             onClick={toggleDarkMode}
             className={`flex items-center space-x-2 px-2 py-2 rounded-md text-sm ${
-              isDarkMode
-                ? "bg-gray-700 text-white"
-                : "bg-gray-100 text-gray-800"
+              isDarkMode ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800"
             }`}
           >
             {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
