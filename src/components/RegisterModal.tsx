@@ -1,3 +1,4 @@
+// components/modals/RegisterModal.tsx
 import React from "react";
 import { useState } from "react";
 import { registerUser } from "../api/auth"; // Make sure this is correctly set up
