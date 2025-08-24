@@ -159,7 +159,7 @@ export default function RegisterModal({ onClose }: { onClose: () => void }) {
             <PhoneInput
               country={"in"} // Default country: India
               value={formData.phone}
-              onChange={(phone) => setFormData({ ...formData, phone })}
+              onChange={(phone: string) => setFormData({ ...formData, phone })}
               inputClass="!w-full !bg-gray-100 dark:!bg-gray-800 !text-gray-800 dark:!text-white !border-gray-300 dark:!border-gray-700 !rounded-lg"
               buttonClass="!bg-gray-100 dark:!bg-gray-800"
               containerClass="!w-full"
