@@ -200,7 +200,6 @@ function TattoosPage() {
                     })
                   }
                   required
-                  min={100}
                   className="p-3 rounded border dark:bg-gray-900"
                 />
 
