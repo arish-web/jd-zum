@@ -1,26 +1,13 @@
 import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
 import Navbar from "../../components/navbar/Navbar";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import type { Appointment } from "../../types";
 import { getAppointmentsForUser } from "../../api/appointment";
 import PaymentModal from "../../components/PaymentModal";
 import Footer from "../../components/Footer";
 
-const COLORS = ["#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
 const ClientDashboard: React.FC = () => {
   const { isDarkMode } = useTheme();
@@ -30,38 +17,10 @@ const ClientDashboard: React.FC = () => {
     useState<Appointment | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
 
-  const chartData = useMemo(() => {
-    const counts: { [key: string]: number } = {};
-
-    appointments.forEach((app) => {
-      const date = new Date(app.createdAt);
-      const month = date.toLocaleString("default", { month: "short" });
-      counts[month] = (counts[month] || 0) + 1;
-    });
-
-    return Object.entries(counts).map(([month, bookings]) => ({
-      month,
-      bookings,
-    }));
-  }, [appointments]);
-
   const handlePayment = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
     setShowQRModal(true);
   };
-
-  const categoryCount = appointments.reduce((acc, app) => {
-    const category = app?.serviceId?.category;
-    if (category) {
-      acc[category] = (acc[category] || 0) + 1;
-    }
-    return acc;
-  }, {} as Record<string, number>);
-
-  const categoryData = Object.entries(categoryCount).map(([name, value]) => ({
-    name,
-    value,
-  }));
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -90,61 +49,6 @@ const ClientDashboard: React.FC = () => {
         <p className="text-gray-500 dark:text-gray-400">
           Welcome back, {user?.name}
         </p>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8 mb-10">
-        {/* Bar Chart */}
-        <div
-          className={`${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          } p-6 rounded-lg shadow-md`}
-        >
-          <h3 className="text-xl font-bold mb-4">Your Monthly Bookings</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="bookings" fill="#3B82F6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Pie Chart */}
-        <div
-          className={`${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          } p-6 rounded-lg shadow-md`}
-        >
-          <h3 className="text-xl font-bold mb-4">Preferred Categories</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={categoryData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  dataKey="value"
-                  label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
-                >
-                  {categoryData.map((_, idx) => (
-                    <Cell
-                      key={`cell-${idx}`}
-                      fill={COLORS[idx % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
       </div>
 
       {/* Recent Bookings Table */}
