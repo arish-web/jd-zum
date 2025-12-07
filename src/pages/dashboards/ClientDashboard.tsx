@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import type { Appointment } from "../../types";
 import { getAppointmentsForUser } from "../../api/appointment";
 import PaymentModal from "../../components/PaymentModal";
+import WhatsAppButton from "../../components/WhatsAppButton";
 import Footer from "../../components/Footer";
 
 
@@ -154,6 +155,9 @@ const ClientDashboard: React.FC = () => {
           }
         />
       )}
+
+      <WhatsAppButton />
+
     </div>
   );
 };
